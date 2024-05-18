@@ -58,6 +58,7 @@ router.get('/google', (req, res) => {
 router.get('/google/callback', async (req, res) => {
   try {
     const code = req.query.code;
+    console.log('code:', code)
 
     // Exchange authorization code for tokens
     const { tokens } = await oauth2Client.getToken(code);
@@ -104,7 +105,7 @@ router.get('/google/callback', async (req, res) => {
     };
 
     const searchParams = new URLSearchParams(userData);
-    const frontendUrl = `http://localhost:3000/calender?${searchParams.toString()}`;
+    const frontendUrl = `https://evallocalender.vercel.app/calender?${searchParams.toString()}`;
 
     // Redirect to the frontend with user data
     res.redirect(frontendUrl);
