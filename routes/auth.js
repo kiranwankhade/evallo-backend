@@ -101,7 +101,8 @@ router.get('/google/callback', async (req, res) => {
       accessToken: tokens.access_token,
       tokenId: tokens.id_token,
       expiryDate: tokens.expiry_date,
-      scope:tokens.scope
+      scope:tokens.scope,
+      picture:userInfo.picture
     };
 
     const searchParams = new URLSearchParams(userData);
@@ -116,69 +117,24 @@ router.get('/google/callback', async (req, res) => {
   }
 });
 
-// Routes requiring authentication and access token
-// router.use(verifyAuthAndGetToken);
-// const jwtClient = new google.auth.JWT( 
-//   'kiranwankhade7738@gmail.com', 
-//   null, 
-//   'AIzaSyDh65AymEMmNkE1kqBCzOe0WuTR0djwTIc', 
-//   'https://www.googleapis.com/auth/calendar' 
-// ); 
+router.get('/logout', (req, res) => {
+  try {
+    req.session.destroy(); // Destroy the session to clear all session data
 
-// const calendar = google.calendar({ 
-//   version: 'v3', 
-//   project: 'calender-tutorial-423515', 
-//   auth: jwtClient 
-// }); 
-// Google Calendar API instance
-
-
-
-// Get all events for a user
-// router.get('/events', async (req, res) => {
-//   const user = JSON.parse(req.query.user);
-//   const access_token = user.accessToken; // Bearer token
-//   console.log('accessToken:', access_token)
-
-//   console.log('Request received with userEmail:', user);
-
-//   try {
-//     // Check if user email is provided
-//     if (!user.email) {
-//       return res.status(400).json({ message: 'User email is required' });
-//     }
-
-//     // Check if access token is available
-//     if (!access_token) {
-//       return res.status(401).json({ message: 'Unauthorized' });
-//     }
-
-//     // Set the access token in OAuth2 client
-//     oauth2Client.setCredentials({ access_token: access_token });
-
-//     // Fetch events from Google Calendar API
-//     const response = await calendar.events.list({
-//       calendarId: user.email,
-//       timeMin: new Date().toISOString(),
-//       maxResults: 10,
-//       singleEvents: true,
-//       orderBy: 'startTime',
-//     });
-
-//     const events = response.data.items;
-//     console.log('events:', events)
-//     res.json(events);
-//   } catch (error) {
-//     console.error('Error fetching events:', error);
-//     res.status(500).json({ message: 'Error fetching events', error: error.message });
-//   }
-// });
+    res.redirect('https://evallocalender.vercel.app/calender'); // Redirect to the login page
+  } catch (error) {
+    console.error('Error during logout:', error);
+    res.status(500).send('Logout failed');
+  }
+});
 
 const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
 router.get('/events', async (req, res) => {
+  console.log('req.query.user:', req.query.user)
   try {
     const user = JSON.parse(req.query.user);
+    console.log('user:', user)
     const accessToken = user.accessToken;
     const refreshToken = user.refreshToken;
     console.log('accessToken:', accessToken);
