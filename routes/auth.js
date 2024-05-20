@@ -97,7 +97,7 @@ router.get('/google/callback', async (req, res) => {
 
 router.get('/logout', (req, res) => {
   try {
-    req.session.destroy(); // Destroy the session to clear all session data
+    // req.session.destroy(); // Destroy the session to clear all session data
     res.redirect('https://evallocalender.vercel.app/'); // Redirect to the login page
   } catch (error) {
     console.error('Error during logout:', error);
