@@ -96,10 +96,17 @@ router.get('/google/callback', async (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-  try {
-    req.session.destroy(); // Destroy the session to clear all session data
-
-    res.redirect('https://evallocalender.vercel.app/calender/'); // Redirect to the login page
+   try {
+    // Destroy the session to clear all session data
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error destroying session:', err);
+        res.status(500).send('Logout failed');
+      } else {
+        // Redirect to the login page
+        res.redirect('https://evallocalender.vercel.app/');
+      }
+    });
   } catch (error) {
     console.error('Error during logout:', error);
     res.status(500).send('Logout failed');
