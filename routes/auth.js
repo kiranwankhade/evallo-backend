@@ -13,28 +13,6 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_REDIRECT_URI
 );
 
-// Middleware to verify user authentication and get access token
-const verifyAuthAndGetToken = async (req, res, next) => {
-
-  try {
-    // Check if user is authenticated
-    console.log('req.user :', req.user )
-    if (!req.user || !req.user.accessToken) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    // Get access token from user object or session
-    const accessToken = req.user.accessToken;
-
-    // Set the access token in OAuth2 client
-    oauth2Client.setCredentials({ access_token: accessToken });
-
-    next();
-  } catch (error) {
-    console.error('Error verifying authentication:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-};
 
 // Route to initiate Google OAuth2 flow
 router.get('/google', (req, res) => {
@@ -121,7 +99,7 @@ router.get('/logout', (req, res) => {
   try {
     req.session.destroy(); // Destroy the session to clear all session data
 
-    res.redirect('https://evallocalender.vercel.app/calender'); // Redirect to the login page
+    res.redirect('https://evallocalender.vercel.app/calender/'); // Redirect to the login page
   } catch (error) {
     console.error('Error during logout:', error);
     res.status(500).send('Logout failed');
